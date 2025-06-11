@@ -1,5 +1,4 @@
 const express = require('express');
-
 const { connectToMongoDB, disconnectFromMongoDB } = require('./src/mongodb');
 const { ObjectId } = require('mongodb');
 
