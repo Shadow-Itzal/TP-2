@@ -55,9 +55,11 @@ Esta API RESTful permite gestionar un catálogo de productos, incluyendo operaci
 ## 🚀 Inicio del Servidor
 
 ```bash
-npm install
-npm start
+npm install 
+npm start (se ejecuta con node)
+npm run dev (se ejecuta con nodemon)
 ```
+
 
 El servidor se inicializa desde `server.js`, que:
 
@@ -203,8 +205,7 @@ Los controladores son funciones asincrónicas que:
 - Variables `.env`:
 
   ```env
-  PORT=3030
-  MONGODB_URI=mongodb+srv://usuario:contraseña.@usuario.yw3bzl7.mongodb.net/
+  PORT = 3030
+  MONGODB_URI = mongodb+srv://usuario:contraseña.@usuario.yw3bzl7.mongodb.net/
   ```
-
 ---

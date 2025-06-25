@@ -204,8 +204,9 @@ Los controladores son funciones asincrónicas que:
 - Variables `.env`:
 
   ```env
-  PORT=3030
-  MONGODB_URI=mongodb+srv://usuario:contraseña.@usuario.yw3bzl7.mongodb.net/
+  PORT = 3030
+  MONGODB_URI = mongodb+srv://usuario:contraseña.@usuario.yw3bzl7.mongodb.net/
   ```
+---
 
 ---
