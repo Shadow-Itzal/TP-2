@@ -18,8 +18,8 @@ let db = null; // referencia a la base de datos
 // Configuración de validación de esquema JSON para la colección 'productos'
 const productoSchema = {
   validator: {
-    $jsonSchema: {
-      bsonType: 'object',
+    $jsonSchema: { // esto significa que el esquema es un JSON Schema
+      bsonType: 'object',  //bsonType: 'object' indica que el esquema es un objeto
       required: ['codigo', 'nombre', 'precio', 'categoria'],
       properties: {
         codigo: {
@@ -47,16 +47,16 @@ const productoSchema = {
 };
 
 // Función para inicializar la colección con validación (si no existe)
-async function initCollections() {
-  const existing = await db.listCollections({ name: 'productos' }).toArray();
-  if (existing.length === 0) {
-    await db.createCollection('productos', productoSchema);
-    console.log('🗄️ Colección "productos" creada con validación de esquema');
+async function initCollections() {  // inicializa la colección
+  const existing = await db.listCollections({ name: 'productos' }).toArray();  // verifica si la colección 'productos' ya existe
+  if (existing.length === 0) {  // si no existe, crea la colección
+    await db.createCollection('productos', productoSchema);  // crea la colección
+    console.log('🗄️ Colección "productos" creada con validación de esquema');  
   } else {
     // Si ya existe, aplicar validación con collMod
-    await db.command({
-      collMod: 'productos',
-      ...productoSchema,
+    await db.command({  // aplica la validación
+      collMod: 'productos',  // nombre de la colección
+      ...productoSchema,  // esquema
     });
     console.log('🔧 Validación de esquema aplicada a colección "productos"');
   }
@@ -78,50 +78,59 @@ async function connectToMongoDB() {
 
 // función para obtener la instancia de la base de datos
 function getDB() {
-  if (!db) {
-    throw new Error('⚠️ La base de datos no está conectada. Llama a connectToMongoDB primero.');
+  if (!db) {  // si no se ha conectado, lanza un error
+    throw new Error('⚠️ La base de datos no está conectada. Llama a connectToMongoDB primero.');  // throw new Error() lanza un error
   }
   return db;
 }
 
 // CRUD para productos
-async function createProducto(producto) {
-  const collection = getDB().collection('productos');
+
+// Función para crear un producto
+async function createProducto(producto) {  // crea un producto
+  const collection = getDB().collection('productos');  // obtiene la colección
   // Asegurar tipos adecuados
-  const doc = {
-    codigo: parseInt(producto.codigo, 10),
-    nombre: String(producto.nombre).trim(),
-    precio: Number(producto.precio),
-    categoria: String(producto.categoria).trim(),
+  const doc = {  // inicializa el documento
+    codigo: parseInt(producto.codigo, 10),  // asegurar tipos adecuados
+    nombre: String(producto.nombre).trim(),  // asegurar tipos adecuados y limpiar espacios
+    precio: Number(producto.precio),  // asegurar tipos adecuados
+    categoria: String(producto.categoria).trim(),  // asegurar tipos adecuados y limpiar espacios
   };
-  const result = await collection.insertOne(doc);
-  return result.insertedId;
+  const result = await collection.insertOne(doc);  // inserta el producto
+  return result.insertedId;  // devuelve el ID del producto creado
 }
 
-async function getProductos(filter = {}) {
-  const collection = getDB().collection('productos');
-  return collection.find(filter).toArray();
+// Función para obtener productos
+async function getProductos(filter = {}) {  // busca todos los productos
+  const collection = getDB().collection('productos');  // obtiene la colección
+  return collection.find(filter).toArray();  // devuelve todos los productos
 }
 
-async function getProductoByCodigo(codigo) {
-  const collection = getDB().collection('productos');
-  return collection.findOne({ codigo: parseInt(codigo, 10) });
+
+// Función para obtener un producto por codigo
+async function getProductoByCodigo(codigo) {  // busca un producto
+  const collection = getDB().collection('productos');  // obtiene la colección
+  return collection.findOne({ codigo: parseInt(codigo, 10) });  // busca un producto por su código
 }
 
-async function updateProducto(codigo, cambios) {
-  const collection = getDB().collection('productos');
-  const updateDoc = { $set: {} };
-  if (cambios.nombre) updateDoc.$set.nombre = String(cambios.nombre).trim();
-  if (cambios.precio !== undefined) updateDoc.$set.precio = Number(cambios.precio);
-  if (cambios.categoria) updateDoc.$set.categoria = String(cambios.categoria).trim();
-  const result = await collection.updateOne({ codigo: parseInt(codigo, 10) }, updateDoc);
-  return result.modifiedCount;
+
+// Función para actualizar un producto
+async function updateProducto(codigo, cambios) {  // actualiza un producto
+  const collection = getDB().collection('productos');  // obtiene la colección
+  const updateDoc = { $set: {} };  // inicializa el documento de actualización
+  if (cambios.nombre) updateDoc.$set.nombre = String(cambios.nombre).trim(); // asegurar tipos adecuados y limpiar espacios del nombre
+  if (cambios.precio !== undefined) updateDoc.$set.precio = Number(cambios.precio); // asegurar tipos adecuados y limpiar espacios del precio
+  if (cambios.categoria) updateDoc.$set.categoria = String(cambios.categoria).trim();  // asegurar tipos adecuados y limpiar espacios de la categoría
+  const result = await collection.updateOne({ codigo: parseInt(codigo, 10) }, updateDoc);  // actualiza el producto
+  return result.modifiedCount;  // devuelve el número de documentos modificados
 }
 
-async function deleteProducto(codigo) {
-  const collection = getDB().collection('productos');
-  const result = await collection.deleteOne({ codigo: parseInt(codigo, 10) });
-  return result.deletedCount;
+
+// Función para eliminar un producto
+async function deleteProducto(codigo) {  // elimina un producto
+  const collection = getDB().collection('productos');  // obtiene la colección
+  const result = await collection.deleteOne({ codigo: parseInt(codigo, 10) });  // elimina el producto
+  return result.deletedCount;  // devuelve el número de documentos eliminados
 }
 
 // función para desconectar
@@ -136,6 +145,7 @@ async function disconnectFromMongoDB() {
   }
 }
 
+// exportaciones
 module.exports = {
   connectToMongoDB,
   disconnectFromMongoDB,

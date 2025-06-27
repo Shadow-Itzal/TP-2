@@ -15,6 +15,7 @@ const PORT = process.env.PORT || 3030;
   process.on('SIGINT', async () => {
     console.log('\n🛑 Deteniendo servidor...');
 
+    // este try hace el cierre limpio
     try {
       await disconnectFromMongoDB();
       console.log('✔️ Base de datos desconectada');
